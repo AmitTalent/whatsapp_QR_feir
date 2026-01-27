@@ -16,7 +16,7 @@ button:disabled {background:#ccc; cursor:not-allowed;}
 <h2>קישור WhatsApp מוכן</h2>
 
 <select id="role">
-  <option value="">בחר משרה</option>
+  <option value="">בחר/י משרה</option>
   <option value="טבחים/יות">טבחים/יות</option>
   <option value="הווי ובידור">הווי ובידור</option>
   <option value="קבטים/יות">קבטים/יות</option>
@@ -25,19 +25,18 @@ button:disabled {background:#ccc; cursor:not-allowed;}
 </select>
 
 <select id="area">
-  <option value="">בחר אזור</option>
-  <option value="הרצליה">הרצליה</option>
+  <option value="">בחר/י אזור</option>
   <option value="אילת">אילת</option>
   <option value="ים המלח">ים המלח</option>
   <option value="תל אביב וירושלים">תל אביב וירושלים</option>
-  <option value="צפון">צפון</option>
+  <option value="צפון">צפון </option>
 </select>
 
 <br>
-<button id="sendBtn" disabled>שלח עכשיו ב-WhatsApp</button>
+<button id="sendBtn" disabled>שלח/י עכשיו ב-WhatsApp</button>
 
 <script>
-const phone = "97235093988";
+const phone = "97236215494";
 const roleSel = document.getElementById("role");
 const areaSel = document.getElementById("area");
 const btn = document.getElementById("sendBtn");
@@ -48,7 +47,7 @@ function updateButton() {
     btn.onclick = null;
     return;
   }
-  const msg = `היי, אשמח לשמוע פרטים נוספים על משרת ${roleSel.value} למלון נופש יוקרתי ב${areaSel.value} שפרסמתם `;
+  const msg = `היי, אשמח לשמוע פרטים נוספים על משרת ${roleSel.value} למלון נופש יוקרתי ב${areaSel.value} שפרסמתם בכנס משתחררים באשקלון `;
   btn.disabled = false;
   btn.onclick = () => {
     window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, "_blank");
