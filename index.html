@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WhatsApp Link</title>
+<title>WhatsApp Link דינמי</title>
 <style>
 body {font-family: Arial, sans-serif; padding: 20px; text-align:center;}
 select, button {padding:8px 12px; margin:5px; font-size:16px;}
@@ -15,39 +15,36 @@ button:disabled {background:#ccc; cursor:not-allowed;}
 
 <h2>קישור WhatsApp מוכן</h2>
 
-<select id="role">
-  <option value="">בחר/י משרה</option>
-  <option value="טבחים/יות">טבחים/יות</option>
-  <option value="הווי ובידור">הווי ובידור</option>
-  <option value="קבטים/יות">קבטים/יות</option>
-  <option value="פקיד/ת קבלה">פקיד/ת קבלה</option>
-  <option value="מלצר/ית">מלצר/ית</option>
-</select>
-
-<select id="area">
-  <option value="">בחר/י אזור</option>
-  <option value="אילת">אילת</option>
-  <option value="ים המלח">ים המלח</option>
-  <option value="תל אביב וירושלים">תל אביב וירושלים</option>
-  <option value="צפון">צפון</option>
-</select>
+<select id="role"></select>
+<select id="area"></select>
 
 <br>
 <button id="sendBtn" disabled>שלח/י עכשיו ב-WhatsApp</button>
 
 <script>
-// ====== הגדרות ראשיות ======
-const conferenceName = "כנס משתחררים באשקלון"; // <-- כאן תשנה כשיש כנס חדש
+// ====== הגדרות דינמיות ======
 
-// מספרי טלפון לפי אזור (כרגע כולם אותו מספר)
-const phonesByArea = {
+// רשימת המשרות
+const roles = [
+  "טבחים/יות",
+  "הווי ובידור",
+  "קבטים/יות",
+  "פקיד/ת קבלה",
+  "מלצר/ית"
+];
+
+// רשימת האזורים עם מספרי WhatsApp (כרגע כולם אותו מספר, ניתן לשנות)
+const areas = {
   "אילת": "97236215494",
   "ים המלח": "97236215494",
   "תל אביב וירושלים": "97236215494",
   "צפון": "97236215494"
 };
 
-// ====== לוגיקה ======
+// הכנס הנוכחי
+const conferenceName = "כנס משתחררים באשקלון";
+
+// ====== פונקציות לוגיקה ======
 function buildMessage(role, area) {
   return `היי, אשמח לשמוע פרטים נוספים על משרת ${role} למלון נופש יוקרתי ב${area} שפרסמתם ב${conferenceName}`;
 }
@@ -59,23 +56,47 @@ function canSend(role, area) {
 function sendWhatsApp(role, area) {
   if (!canSend(role, area)) return;
 
-  const phone = phonesByArea[area]; // בוחר את המספר לפי אזור
+  const phone = areas[area];
   const msg = buildMessage(role, area);
   const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`;
-
   window.open(url, "_blank");
 }
 
-// ====== UI ======
+// ====== UI דינמי ======
 const roleSel = document.getElementById("role");
 const areaSel = document.getElementById("area");
 const btn = document.getElementById("sendBtn");
 
+// בונה את רשימת המשרות אוטומטית
+function populateRoles() {
+  roleSel.innerHTML = '<option value="">בחר/י משרה</option>';
+  roles.forEach(role => {
+    const opt = document.createElement("option");
+    opt.value = role;
+    opt.textContent = role;
+    roleSel.appendChild(opt);
+  });
+}
+
+// בונה את רשימת האזורים אוטומטית
+function populateAreas() {
+  areaSel.innerHTML = '<option value="">בחר/י אזור</option>';
+  Object.keys(areas).forEach(area => {
+    const opt = document.createElement("option");
+    opt.value = area;
+    opt.textContent = area;
+    areaSel.appendChild(opt);
+  });
+}
+
+// עדכון מצב כפתור
 function updateButtonState() {
   btn.disabled = !canSend(roleSel.value, areaSel.value);
 }
 
-// מאזינים לשינויים
+// אתחול
+populateRoles();
+populateAreas();
 btn.addEventListener("click", () => sendWhatsApp(roleSel.value, areaSel.value));
 roleSel.addEventListener("change", updateButtonState);
 areaSel.addEventListener("change", updateButtonState);
