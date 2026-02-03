@@ -44,6 +44,9 @@ const areas = {
 // הכנס הנוכחי
 const conferenceName = "כנס משתחררים באשקלון";
 
+// עדכון title של הדף עם שם הכנס
+document.title = conferenceName;
+
 // ====== פונקציות לוגיקה ======
 function buildMessage(role, area) {
   return `היי, אשמח לשמוע פרטים נוספים על משרת ${role} למלון נופש יוקרתי ב${area} שפרסמתם ב${conferenceName}`;
