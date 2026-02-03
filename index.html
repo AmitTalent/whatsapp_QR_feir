@@ -29,33 +29,57 @@ button:disabled {background:#ccc; cursor:not-allowed;}
   <option value="אילת">אילת</option>
   <option value="ים המלח">ים המלח</option>
   <option value="תל אביב וירושלים">תל אביב וירושלים</option>
-  <option value="צפון">צפון </option>
+  <option value="צפון">צפון</option>
 </select>
 
 <br>
 <button id="sendBtn" disabled>שלח/י עכשיו ב-WhatsApp</button>
 
 <script>
-const phone = "97236215494";
+// ====== הגדרות ראשיות ======
+const conferenceName = "כנס משתחררים באשקלון"; // <-- כאן תשנה כשיש כנס חדש
+
+// מספרי טלפון לפי אזור (כרגע כולם אותו מספר)
+const phonesByArea = {
+  "אילת": "97236215494",
+  "ים המלח": "97236215494",
+  "תל אביב וירושלים": "97236215494",
+  "צפון": "97236215494"
+};
+
+// ====== לוגיקה ======
+function buildMessage(role, area) {
+  return `היי, אשמח לשמוע פרטים נוספים על משרת ${role} למלון נופש יוקרתי ב${area} שפרסמתם ב${conferenceName}`;
+}
+
+function canSend(role, area) {
+  return role !== "" && area !== "";
+}
+
+function sendWhatsApp(role, area) {
+  if (!canSend(role, area)) return;
+
+  const phone = phonesByArea[area]; // בוחר את המספר לפי אזור
+  const msg = buildMessage(role, area);
+  const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`;
+
+  window.open(url, "_blank");
+}
+
+// ====== UI ======
 const roleSel = document.getElementById("role");
 const areaSel = document.getElementById("area");
 const btn = document.getElementById("sendBtn");
 
-function updateButton() {
-  if(!roleSel.value || !areaSel.value) {
-    btn.disabled = true;
-    btn.onclick = null;
-    return;
-  }
-  const msg = `היי, אשמח לשמוע פרטים נוספים על משרת ${roleSel.value} למלון נופש יוקרתי ב${areaSel.value} שפרסמתם בכנס משתחררים באשקלון `;
-  btn.disabled = false;
-  btn.onclick = () => {
-    window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`, "_blank");
-  };
+function updateButtonState() {
+  btn.disabled = !canSend(roleSel.value, areaSel.value);
 }
 
-roleSel.addEventListener("change", updateButton);
-areaSel.addEventListener("change", updateButton);
+// מאזינים לשינויים
+btn.addEventListener("click", () => sendWhatsApp(roleSel.value, areaSel.value));
+roleSel.addEventListener("change", updateButtonState);
+areaSel.addEventListener("change", updateButtonState);
+
 </script>
 
 </body>
